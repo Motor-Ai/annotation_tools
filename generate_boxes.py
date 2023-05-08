@@ -111,8 +111,8 @@ if __name__ == '__main__':
     TEXT_PROMPT = args['p']
 
     os.makedirs(output_path, exist_ok=True)
-    weights_path = "/home/sam/work/annotation_tools/weights/groundingdino_swint_ogc.pth"
-    model_path = "/home/sam/work/annotation_tools/models/GroundingDINO_SwinT_OGC.py"
+    weights_path = "weights/groundingdino_swint_ogc.pth"
+    model_path = "models/GroundingDINO_SwinT_OGC.py"
     model = load_model(model_path, weights_path)
     BOX_TRESHOLD = 0.25
     TEXT_TRESHOLD = 0.3
