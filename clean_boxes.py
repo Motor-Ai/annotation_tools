@@ -122,6 +122,8 @@ class SimpleApp:
         self.height = h
         self.play_speed = 25 
         self.autoplay = False
+        self.start_x, self.start_y = None, None
+
  
         self.load_image()
 
@@ -136,6 +138,8 @@ class SimpleApp:
         self.root.bind("<Right>", self.next_image)
         self.canvas.bind("<ButtonPress-3>", self.handle_right_click)
         self.canvas.bind("<ButtonRelease-3>", self.handle_right_release)
+        self.canvas.bind("<B3-Motion>", self.handle_motion)
+
 
     def get_image_files(self):
         image_extensions = (".png", ".jpg", ".jpeg", ".gif", ".bmp")
@@ -227,8 +231,17 @@ class SimpleApp:
         self.load_image()
         self.canvas.config(width=self.photo.width(), height=self.photo.height())
         self.canvas.create_image(0, 0, image=self.photo, anchor=tk.NW)
+        self.canvas.delete("temp_square")
+        self.start_x, self.start_y = None, None
 
 
+
+
+    def handle_motion(self, event):
+        if self.start_x and self.start_y:
+            self.canvas.delete("temp_square")
+            temp_square = (self.start_x, self.start_y, event.x, event.y)
+            self.canvas.create_rectangle(temp_square, outline="blue", width=2, tags="temp_square")
 
     def handle_click(self, event):
         x, y = event.x, event.y
