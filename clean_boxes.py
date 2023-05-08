@@ -189,6 +189,9 @@ class SimpleApp:
 
     def handle_right_release(self, event):
         end_x, end_y = event.x, event.y
+        if (end_x == self.start_x) or (end_y == self.start_y):
+            print("can't create boxes for a single point!")
+            return
         box = (self.start_x, self.start_y, end_x, end_y)
         box = box_convert(boxes=torch.Tensor([box]),  in_fmt="xyxy", out_fmt="cxcywh")
         box_normalized = box*torch.Tensor([1/self.width, 1/self.height, 1/self.width, 1/self.height])
@@ -228,13 +231,15 @@ class SimpleApp:
                     source=self.image_folder, 
                     img_dims=(self.width, self.height, 3))
         
+        self.current_annotation['boxes'] = boxes
+        self.current_annotation['phrases'] = phrases
+        self.current_annotation['logits'] = logits
+
         self.load_image()
         self.canvas.config(width=self.photo.width(), height=self.photo.height())
         self.canvas.create_image(0, 0, image=self.photo, anchor=tk.NW)
         self.canvas.delete("temp_square")
         self.start_x, self.start_y = None, None
-
-
 
 
     def handle_motion(self, event):
@@ -288,10 +293,15 @@ class SimpleApp:
                               source=self.image_folder, 
                               img_dims=(self.width, self.height, 3))
             
+            self.current_annotation['boxes'] = boxes
+            self.current_annotation['phrases'] = phrases
+            self.current_annotation['logits'] = logits
+            
             print(f'updated annotations for {self.label_files[self.current_image_index]}')
 
         else:
             print("Clicked outside the squares")
+            return
 
         self.load_image()
         self.canvas.config(width=self.photo.width(), height=self.photo.height())
