@@ -45,7 +45,7 @@ wget -q https://github.com/IDEA-Research/GroundingDINO/releases/download/v0.1.0-
 
 ### Labeling Data
 ```
-python generate_boxes.py -i <path to images> -o <path to folder to store labels>  -p <text prompt specifying models to detect e.g 'traffic sign .'>
+python generate_boxes.py -i <path to images> -o <path to folder to store labels>  -p <text prompt> -b <box threshold> -t <text threshold>
 ```
 ### Cleaning Labels
 ```
