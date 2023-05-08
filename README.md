@@ -1,4 +1,8 @@
 # Annotation Tools
+This project contains:
+1. Scripts that use big pre-trained neural networks to create annotations. 
+2. Scripts that allow the user to visualize and clean the labels generated automatically.
+
 **Installation:**
 ```bash
 git clone git@github.com:Motor-Ai/annotation_tools.git
@@ -39,7 +43,7 @@ cd weights
 wget -q https://github.com/IDEA-Research/GroundingDINO/releases/download/v0.1.0-alpha/groundingdino_swint_ogc.pth
 ```
 
-### Labelling Data
+### Labeling Data
 ```
 python generate_boxes.py -i <path to images> -o <path to folder to store labels>  -p <text prompt specifying models to detect e.g 'traffic sign .'>
 ```
@@ -48,6 +52,13 @@ python generate_boxes.py -i <path to images> -o <path to folder to store labels>
 # This command assumes that the data is stored according to the datasets structure shown above.
 python clean_boxes.py -s <session id> -t <data type (train or val)>
 ```
+You can use the following commands:
+| Control  | Command  | 
+|---|---|
+| Right Arrow  | load next image  |  
+| Left Arrow | load previous image  |    
+|  Left Click | delete bounding box  |    
+|  Right Click (Hold and Release) | create bounding box  |   
 
 ## Segmentation Masks
 ### Models
