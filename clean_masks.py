@@ -55,29 +55,16 @@ class ImageViewer:
             good_image_files = list(filter(lambda x: not file_idx_in_set(x, bad_indices), self.image_files))
             good_mask_files = list(filter(lambda x: not file_idx_in_set(x, bad_indices), self.mask_files))
 
-            # print(f'good image files {good_image_files}')
-            # print(f'good mask files {good_mask_files}')
+
             self.image_files = good_image_files
             self.mask_files = good_mask_files
 
-        # print(f'self image files {self.image_files}')
-        # print(f'self mask files {self.mask_files}')
-        # self.image_files.extend(glob.glob(os.path.join(image_folder, '*.png')))
-        # self.image_files.sort()
         self.current_image_index = 0
         self.auto_select_flag = False
         self.autoplay = False
         self.selected_images = set()
         self.width, self.height = 1100, 900
         self.play_speed = play_speed  
-        # self.master.geometry(f"{self.width}x{self.height}")
-
-        # self.discarded_images_path = f"{image_folder}_bad"
-        # self.discarded_masks_file = f"{mask_folder}_bad.json"
-
-        # os.makedirs(self.discarded_images_path, exist_ok=True)
-        # os.makedirs(self.discarded_masks_path, exist_ok=True)
-        # self.bad_images
 
         self.display_image()
     
