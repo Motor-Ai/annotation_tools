@@ -64,3 +64,25 @@ You can use the following commands:
 ### Models
 - [SAM] (https://github.com/facebookresearch/segment-anything)
 
+**Installation:**
+```
+conda activate <your conda environment>
+pip install git+https://github.com/facebookresearch/segment-anything.git
+cd <path to annotation_tools>/weights
+wget https://dl.fbaipublicfiles.com/segment_anything/sam_vit_b_01ec64.pth
+```
+
+### Labeling Data
+To start labeling run the following script and follow the instructions thereafter:
+```
+python generate_masks.py -i <path to images folder> -o <path to folder to store masks> 
+```
+
+### Cleaning Data
+For now you need to move your images and corresponding masks to the datastructure mentioned above before visualizing the data.
+To clean the generated masks run:
+
+```
+python clean_masks.py -s <session name> -t <train or val> --camera-index <0 or 1>
+```
+You can see the controls on the bottom bar of the app.
