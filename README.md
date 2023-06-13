@@ -51,7 +51,7 @@ python clean_boxes.py -images_folder <path to your data>
 | Left Arrow | load previous image  |    
 |  Left Click | delete bounding box  |    
 |  Right Click (Hold and Release) | create bounding box  |       
-|  Mouth Click (Hold and Release) | zoom into a region  |  
+|  Wheel Click (Hold and Release) | zoom into a region  |  
 | a  | start autoplay of images  |  
 | s | stop autoplay of images  |    
 | d | delete all bounding boxes from the image  |    
