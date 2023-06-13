@@ -7,22 +7,6 @@ This project contains:
 ```bash
 git clone git@github.com:Motor-Ai/annotation_tools.git
 ```
-## Datasets structure
-```
-├── train
-│   ├── <session id>
-│   │   ├── images
-│   │   └── labels
-│    ...
-│   ├── <session id>
-│       ├── images
-│       └── labels
-└── val
-    └── <session id
-        ├── images
-        └── labels
-```
-
 ## 2D Bounding Boxes
 ### Models
 - [GroundingDINO] (https://github.com/IDEA-Research/GroundingDINO)
@@ -32,7 +16,9 @@ git clone git@github.com:Motor-Ai/annotation_tools.git
 Install GroundingDINO in your desired conda environment and download the model weigths.
 
 ```bash
-conda activate <your conda environment>
+conda env create -f sam.yml
+
+conda activate sam
 cd <path to where you store your repositories>
 git clone https://github.com/IDEA-Research/GroundingDINO.git
 cd GroundingDINO/
@@ -49,16 +35,28 @@ python generate_boxes.py -i <path to images> -o <path to folder to store labels>
 ```
 ### Cleaning Labels
 ```
-# This command assumes that the data is stored according to the datasets structure shown above.
-python clean_boxes.py -s <session id> -t <data type (train or val)>
+# This command assumes that the data is stored in the following way:
+<!--  path_to_your_data
+ - labels
+ - images -->
+
+
+python clean_boxes.py -images_folder <path to your data>
 ```
-You can use the following commands:
+### The functionality 0f the app:
+
 | Control  | Command  | 
 |---|---|
 | Right Arrow  | load next image  |  
 | Left Arrow | load previous image  |    
 |  Left Click | delete bounding box  |    
-|  Right Click (Hold and Release) | create bounding box  |   
+|  Right Click (Hold and Release) | create bounding box  |       
+|  Mouth Click (Hold and Release) | zoom into a region  |  
+| a  | start autoplay of images  |  
+| s | stop autoplay of images  |    
+| d | delete all bounding boxes from the image  |    
+| q | next image and delete all bounding boxes from the previous one |   
+
 
 ## Segmentation Masks
 ### Models

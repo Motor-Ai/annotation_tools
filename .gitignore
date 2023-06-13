@@ -1,4 +1,6 @@
 weights/
-datasets/
-sam.yml
+dataset/
+sorted_dataset/
 clean_boxes_copy.py
+GroundingDINO/
+test_script.py

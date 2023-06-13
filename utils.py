@@ -10,13 +10,65 @@ import supervision as sv
 import xml.etree.ElementTree as ET
 from torchvision.ops import box_convert
 
+# Function to print colored message
+def print_color(text, color):
+    # ANSI escape codes for different colors
+    color_codes = {
+        'red': '\033[91m',
+        'green': '\033[92m',
+        'yellow': '\033[93m',
+        'blue': '\033[94m',
+        'purple': '\033[95m',
+        'cyan': '\033[96m',
+        'white': '\033[97m',
+        'reset': '\033[0m'
+    }
+
+    color_code = color_codes.get(color.lower())
+    if color_code:
+        print(color_code + text + color_codes['reset'])
+    else:
+        print(text)  # Print without color if color is not found
+
+
+def rescale_bounding_box(old_width, old_height, new_width, new_height, bbox):
+    xmin, ymin, xmax, ymax = bbox
+
+    scale_factor_height = old_height / new_height
+    scale_factor_width = old_width / new_width
+
+    
+    xmin_pixel = xmin * old_width
+    ymin_pixel = ymin * old_height
+    xmax_pixel = xmax * old_width
+    ymax_pixel = ymax * old_height
+    
+    xmin_scaled = (xmin_pixel) / scale_factor_width
+    ymin_scaled = (ymin_pixel) / scale_factor_height
+    xmax_scaled = (xmax_pixel) / scale_factor_width
+    ymax_scaled = (ymax_pixel) / scale_factor_height
+    
+    xmin_normalized = xmin_scaled / new_width
+    ymin_normalized = ymin_scaled / new_height
+    xmax_normalized = xmax_scaled / new_width
+    ymax_normalized = ymax_scaled / new_height
+    
+    return xmin_normalized, ymin_normalized, xmax_normalized, ymax_normalized
 
 def write_bbox_to_xml(bbox_annotation, labels, logits, output_file, filename=None, source=None, img_dims=None, box_threshold=None, text_threshold=None, text_prompt=None,
                       cleaned=None, bbox_format = 'cxcywh'):
-    # Parse the existing XML file
-    tree = ET.parse(output_file)
-    annotation = tree.getroot()
+        # Check if the XML file exists
+    file_exists = os.path.isfile(output_file)
 
+    # Create a new XML file if it doesn't exist
+    if not file_exists:
+        annotation = ET.Element("annotation")
+        tree = ET.ElementTree(annotation)
+    else:
+        # Parse the existing XML file
+        tree = ET.parse(output_file)
+        annotation = tree.getroot()
+        
     # Update the variables with new values
     if filename is not None:
         fn = annotation.find("filename")
@@ -27,9 +79,9 @@ def write_bbox_to_xml(bbox_annotation, labels, logits, output_file, filename=Non
     if img_dims is not None:
         size = annotation.find("size")
         width_ = size.find("width")
-        width_.text = str(img_dims[0])
+        width_.text = str(img_dims[1])
         height_ = size.find("height")
-        height_.text = str(img_dims[1])
+        height_.text = str(img_dims[0])
         depth_ = size.find("depth")
         depth_.text = str(img_dims[2])
 
@@ -61,10 +113,10 @@ def write_bbox_to_xml(bbox_annotation, labels, logits, output_file, filename=Non
             cleaned_ = ET.SubElement(obj, "cleaned")
             cleaned_.text = str(cleaned)
             
-        truncated = ET.SubElement(obj, "truncated")
-        truncated.text = '0'
-        occluded = ET.SubElement(obj, "occluded")
-        occluded.text = str(0)
+        # truncated = ET.SubElement(obj, "truncated")
+        # truncated.text = '0'
+        # occluded = ET.SubElement(obj, "occluded")
+        # occluded.text = str(0)
         bndbox = ET.SubElement(obj, "bndbox")
         xmin = ET.SubElement(bndbox, "xmin")
         xmax = ET.SubElement(bndbox, "xmax")
@@ -73,7 +125,7 @@ def write_bbox_to_xml(bbox_annotation, labels, logits, output_file, filename=Non
             xyxy_bbox =  box_convert(boxes=bbox_annotation[i], in_fmt="cxcywh", out_fmt="xyxy")
         else:
             xyxy_bbox = bbox_annotation[i]
-            print("the xyxy box: ", xyxy_bbox)
+
         # xyxy_bbox =  box_convert(boxes=bbox_annotation[i], in_fmt="cxcywh", out_fmt="xyxy")
             
         xmin.text = str(xyxy_bbox[0].item())
@@ -82,8 +134,8 @@ def write_bbox_to_xml(bbox_annotation, labels, logits, output_file, filename=Non
         ymax = ET.SubElement(bndbox, "ymax")
         ymin.text = str(xyxy_bbox[1].item())
         ymax.text = str(xyxy_bbox[3].item())
-        area = bbox_annotation[i][2].item() * bbox_annotation[i][3].item() * img_dims[0] * img_dims[1]
-        difficult = ET.SubElement(obj, "difficult")
+        area = bbox_annotation[i][2].item() * bbox_annotation[i][3].item() 
+        difficult = ET.SubElement(obj, "area")
         difficult.text = str(area)
 
     # Write the updated XML to the same file
@@ -133,6 +185,18 @@ def change_label_in_xml(xml_file, new_label):
     # Write the updated XML to the same file
     tree.write(xml_file, encoding="utf-8", xml_declaration=True)
 
+def change_label_in_xml(xml_file, new_label):
+    # Parse the XML file
+    tree = ET.parse(xml_file)
+    root = tree.getroot()
+
+    # Update the label for each object
+    for obj in root.findall("object"):
+        name = obj.find("name")
+        name.text = new_label
+
+    # Write the updated XML to the same file
+    tree.write(xml_file, encoding="utf-8", xml_declaration=True)
 
 def get_number(file):
     n = re.findall(r'\d+', file)[0]
